@@ -1,0 +1,167 @@
+<PlusMinusButton@Button>:
+    font_size: 50
+
+<MainWidget>:
+    orientation: 'horizontal'
+    padding: 10
+    spacing: 10
+
+    BoxLayout:
+        id: dice_1
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.4
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: num_1
+                    text: '1'
+                    font_size: 250
+                    size_hint_y: 0.3
+
+                Label:
+                    text: '# of dice'
+                    font_size: 40
+                    size_hint_y: 0.05
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: 0.1
+                    PlusMinusButton:
+                        id: minus_1
+                        text: '-'
+                        on_press: num_1.text = root.decrease_num(num_1.text)
+                        on_release: root.change_odds()
+
+                    PlusMinusButton:
+                        id: plus_1
+                        text: '+'
+                        on_press: num_1.text = str(int(num_1.text) + 1)
+                        on_release: root.change_odds()
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: win_1
+                    text: '6'
+                    font_size: 250
+                    size_hint_y: 0.3
+
+                Label:
+                    text: 'or better'
+                    font_size: 40
+                    size_hint_y: 0.05
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: 0.1
+                    PlusMinusButton:
+                        id: win_minus_1
+                        text: '-'
+                        on_press: win_1.text = root.decrease_num(win_1.text)
+                        on_release: root.change_odds()
+
+                    PlusMinusButton:
+                        id: win_plus_1
+                        text: '+'
+                        on_press: win_1.text = root.increase_num(win_1.text)
+                        on_release: root.change_odds()
+
+        Label:
+            id: expected_1
+            size_hint_y: 0.2
+            text: 'Expect 0.17 Kills'
+            font_size: 70
+            valign: 'middle'
+
+        ScrollView:
+            Label:
+                id: odds_1
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                text: '1 Zombie: 16.7%'
+                font_size: 60
+                halign: 'center'
+
+
+    BoxLayout:
+        id: dice_2
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.4
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: num_2
+                    text: '1'
+                    font_size: 250
+                    size_hint_y: 0.3
+
+                Label:
+                    text: '# of dice'
+                    font_size: 40
+                    size_hint_y: 0.05
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: 0.1
+                    PlusMinusButton:
+                        id: minus_2
+                        text: '-'
+                        on_press: num_2.text = root.decrease_num(num_2.text)
+                        on_release: root.change_odds()
+
+                    PlusMinusButton:
+                        id: plus_2
+                        text: '+'
+                        on_press: num_2.text = str(int(num_2.text) + 1)
+                        on_release: root.change_odds()
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: win_2
+                    text: '6'
+                    font_size: 250
+                    size_hint_y: 0.3
+
+                Label:
+                    text: 'or better'
+                    font_size: 40
+                    size_hint_y: 0.05
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: 0.1
+                    PlusMinusButton:
+                        id: win_minus_2
+                        text: '-'
+                        on_press: win_2.text = root.decrease_num(win_2.text)
+                        on_release: root.change_odds()
+
+                    PlusMinusButton:
+                        id: win_plus_2
+                        text: '+'
+                        on_press: win_2.text = root.increase_num(win_2.text)
+                        on_release: root.change_odds()
+
+        Label:
+            id: expected_2
+            size_hint_y: 0.2
+            text: 'Expect 0.17 Kills'
+            font_size: 70
+            valign: 'middle'
+
+        ScrollView:
+            Label:
+                id: odds_2
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                text: '1 Zombie: 16.7%'
+                font_size: 60
+                halign: 'center'

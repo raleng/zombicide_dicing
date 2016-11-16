@@ -30,16 +30,6 @@ def expected_kills(odds):
     return expect
 
 
-def crawler_chance(num_dice):
-    crawler = []
-    if not num_dice == 1:
-        for die in range(1, num_dice):
-            crawler.append(sum(calc_odds(die, 6)))
-
-    crawler.append(0)
-    return crawler
-
-
 def odds_list(odds, crawl):
     cum_prob = [sum(odds[c:])*100 for c in range(len(odds))]
     cum_prob_crawl = [sum(crawl[c:])*100 for c in range(len(crawl))]

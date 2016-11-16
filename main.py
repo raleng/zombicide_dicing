@@ -5,38 +5,37 @@ from kivy.uix.boxlayout import BoxLayout
 from math import factorial
 
 
+def binomial(n, k):
+    return factorial(n) / (factorial(k) * factorial(n-k))
+
+
+def calc_odds(num_dice, win_with):
+    win_odds = (7 - win_with) / 6
+    lose_odds = 1 - win_odds
+
+    results = []
+    for num_wins in range(1, num_dice+1):
+        val = binomial(num_dice, num_wins)
+        val *= win_odds ** num_wins
+        val *= lose_odds ** (num_dice - num_wins)
+        results.append(val)
+
+    return results
+
+
 def expected_kills(odds):
     expect = 0
     for c, odd in enumerate(odds, start=1):
         expect += c * odd
-    return round(expect, 2)
+    return expect
 
 
-def binomial(n, k):
-    return factorial(n) / (factorial(k)*factorial(n-k))
+def odds_list(odds):
+    cum_prob = [sum(odds[c:])*100 for c in range(len(odds))]
 
-
-def calc_odds(num_dice, win_with):
-    win_odds = ((6 - win_with) + 1) / 6
-    lose_odds = (win_with - 1) / 6
-    results = []
-    for num_wins in range(1, num_dice+1):
-        val = win_odds ** num_wins
-        val *= lose_odds ** (num_dice - num_wins)
-        val *= binomial(num_dice, num_wins)
-        results.append(val)
-    return results
-
-
-def odds_list(result_list):
-    if len(result_list):
-        odds_str = '{} Zombie: {:.1f}%\n'.format(1, round(sum(result_list[0:]) * 100, 1))
-    else:
-        return ''
-
-    for count in range(1, len(result_list)):
-        cum_prob = sum(result_list[count:])
-        odds_str += '{} Zombies: {:.1f}%\n'.format(count+1, round(cum_prob*100, 1))
+    odds_str = '{} Zombie: {:.1f}%\n'.format(1, cum_prob[0])
+    for c, prob in enumerate(cum_prob[1:], start=2):
+        odds_str += '{} Zombies: {:.1f}%\n'.format(c, prob)
 
     return odds_str
 
@@ -57,7 +56,7 @@ class MainWidget(BoxLayout):
         else:
             return str(6)
 
-    def change_odds(self, *args):
+    def change_odds(self):
         # LEFT COLUMN
         dice1_num = int(self.ids.num_1.text)
         dice1_win = int(self.ids.win_1.text)

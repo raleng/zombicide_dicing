@@ -30,12 +30,24 @@ def expected_kills(odds):
     return expect
 
 
-def odds_list(odds):
-    cum_prob = [sum(odds[c:])*100 for c in range(len(odds))]
+def crawler_chance(num_dice):
+    crawler = []
+    if not num_dice == 1:
+        for die in range(1, num_dice):
+            crawler.append(sum(calc_odds(die, 6)))
 
-    odds_str = '{} Zombie: {:.1f}%\n'.format(1, cum_prob[0])
-    for c, prob in enumerate(cum_prob[1:], start=2):
-        odds_str += '{} Zombies: {:.1f}%\n'.format(c, prob)
+    crawler.append(0)
+    return crawler
+
+
+def odds_list(odds, crawl):
+    cum_prob = [sum(odds[c:])*100 for c in range(len(odds))]
+    cum_prob_crawl = [sum(crawl[c:])*100 for c in range(len(crawl))]
+    cum_prob_crawl.append(0)
+
+    odds_str = '{} Zombie: {:.1f}%/{:.1f}%\n'.format(1, cum_prob[0], cum_prob_crawl[0])
+    for c, (prob, cr) in enumerate(zip(cum_prob[1:], cum_prob_crawl[1:]), start=2):
+        odds_str += '{} Zombies: {:.1f}%/{:.1f}%\n'.format(c, prob, cr)
 
     return odds_str
 
@@ -62,16 +74,30 @@ class MainWidget(BoxLayout):
         dice1_win = int(self.ids.win_1.text)
         dice1_results = calc_odds(dice1_num, dice1_win)
 
+        # If every die wins, the crawler chance is 0
+        # calc_odds(X, 7) returns list of zeros
+        if dice1_win == 1:
+            dice1_crawler = calc_odds(dice1_num-1, 7)
+        else:
+            dice1_crawler = calc_odds(dice1_num-1, 6)
+
         self.ids.expected_1.text = 'Expect {:.2f} Kills'.format(expected_kills(dice1_results))
-        self.ids.odds_1.text = odds_list(dice1_results)
+        self.ids.odds_1.text = odds_list(dice1_results, dice1_crawler)
 
         # RIGHT COLUMN
         dice2_num = int(self.ids.num_2.text)
         dice2_win = int(self.ids.win_2.text)
         dice2_results = calc_odds(dice2_num, dice2_win)
 
+        # If every die wins, the crawler chance is 0
+        # calc_odds(X, 7) returns list of zeros
+        if dice2_win == 1:
+            dice2_crawler = calc_odds(dice2_num-1, 7)
+        else:
+            dice2_crawler = calc_odds(dice2_num-1, 6)
+
         self.ids.expected_2.text = 'Expect {:.2f} Kills'.format(expected_kills(dice2_results))
-        self.ids.odds_2.text = odds_list(dice2_results)
+        self.ids.odds_2.text = odds_list(dice2_results, dice2_crawler)
 
 
 class ZombicideDicingApp(App):

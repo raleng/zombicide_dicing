@@ -59,35 +59,21 @@ class MainWidget(BoxLayout):
             return str(6)
 
     def change_odds(self):
-        # LEFT COLUMN
-        dice1_num = int(self.ids.num_1.text)
-        dice1_win = int(self.ids.win_1.text)
-        dice1_results = calc_odds(dice1_num, dice1_win)
+        labels = [['num_1', 'win_1', 'expected_1', 'odds_1'], 
+                  ['num_2', 'win_2', 'expected_2', 'odds_2']]
 
-        # If every die wins, the crawler chance is 0
-        # calc_odds(X, 7) returns list of zeros
-        if dice1_win == 1:
-            dice1_crawler = calc_odds(dice1_num-1, 7)
-        else:
-            dice1_crawler = calc_odds(dice1_num-1, 6)
+        for l_num, l_win, l_exp, l_odd in labels: 
+            dice_num = int(self.ids[l_num].text)
+            dice_win = int(self.ids[l_win].text)
+            dice_results = calc_odds(dice_num, dice_win)
 
-        self.ids.expected_1.text = 'Expect {:.2f} Kills'.format(expected_kills(dice1_results))
-        self.ids.odds_1.text = odds_list(dice1_results, dice1_crawler)
+            if dice_win == 1:
+                dice_crawler = calc_odds(dice_num-1, 7)
+            else:
+                dice_crawler = calc_odds(dice_num-1, 6)
 
-        # RIGHT COLUMN
-        dice2_num = int(self.ids.num_2.text)
-        dice2_win = int(self.ids.win_2.text)
-        dice2_results = calc_odds(dice2_num, dice2_win)
-
-        # If every die wins, the crawler chance is 0
-        # calc_odds(X, 7) returns list of zeros
-        if dice2_win == 1:
-            dice2_crawler = calc_odds(dice2_num-1, 7)
-        else:
-            dice2_crawler = calc_odds(dice2_num-1, 6)
-
-        self.ids.expected_2.text = 'Expect {:.2f} Kills'.format(expected_kills(dice2_results))
-        self.ids.odds_2.text = odds_list(dice2_results, dice2_crawler)
+            self.ids[l_exp].text = 'Expect {:.2f} Kills'.format(expected_kills(dice_results))
+            self.ids[l_odd].text = odds_list(dice_results, dice_crawler)
 
 
 class ZombicideDicingApp(App):

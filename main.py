@@ -18,18 +18,15 @@ def calc_odds(num_dice, win_with):
     win_odds = (7 - win_with) / 6
     lose_odds = 1 - win_odds
 
-    results = []
     for num_wins in range(1, num_dice+1):
         val = binomial(num_dice, num_wins)
         val *= win_odds ** num_wins
         val *= lose_odds ** (num_dice - num_wins)
-        results.append(val)
-
-    return results
+        yield val
 
 
 def expected_kills(odds):
-    """ Computes the expected value of Zombie Kills. """
+    """ Computes the expected value of zombie kills. """
     expect = 0
     for c, odd in enumerate(odds, start=1):
         expect += c * odd
@@ -78,14 +75,14 @@ class MainWidget(BoxLayout):
             # Getting input values and calculating odds
             dice_num = int(self.ids[l_num].text)
             dice_win = int(self.ids[l_win].text)
-            dice_results = calc_odds(dice_num, dice_win)
+            dice_results = list(calc_odds(dice_num, dice_win))
 
             # If dice win with 1 or better (i.e. always), no crawler is being created.
             # Calling 'calc_odds(_, 7)' returns list of zeros
             if dice_win == 1:
-                dice_crawler = calc_odds(dice_num-1, 7)
+                dice_crawler = list(calc_odds(dice_num-1, 7))
             else:
-                dice_crawler = calc_odds(dice_num-1, 6)
+                dice_crawler = list(calc_odds(dice_num-1, 6))
 
             # Setting output
             self.ids[l_exp].text = 'Expect {:.2f} Kills'.format(expected_kills(dice_results))

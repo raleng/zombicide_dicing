@@ -1,0 +1,20 @@
+sudo: required
+dist: trusty
+language: generic
+services: docker
+
+before_script:
+    - export IMAGE="renemilk/zomibicide_dicing"
+    - docker pull ${IMAGE} 
+    - export ENV_FILE=${HOME}/env
+    - printenv | \grep TRAVIS > ${ENV_FILE}
+    - export DOCKER_RUN="docker run --env-file ${ENV_FILE} -v ${TRAVIS_BUILD_DIR}:/root/build ${IMAGE}"
+
+script:
+    - ${DOCKER_RUN} 
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+

@@ -77,14 +77,12 @@
             valign: 'middle'
 
         ScrollView:
-            Label:
+            GridLayout:
                 id: odds_1
-                text_size: self.width, None
-                size_hint_y: None
-                height: self.texture_size[1]
-                text: '1 - 16.7%/0.0%'
-                font_size: '15dp'
-                halign: 'center'
+                cols: 3
+                spacing: '5dp'
+                row_force_default: True
+                row_default_height: '20dp'
 
 
     BoxLayout:
@@ -157,11 +155,9 @@
             valign: 'middle'
 
         ScrollView:
-            Label:
+            GridLayout:
                 id: odds_2
-                text_size: self.width, None
-                size_hint_y: None
-                height: self.texture_size[1]
-                text: '1 - 16.7%/0.0%'
-                font_size: '15dp'
-                halign: 'center'
+                cols: 3
+                spacing: '5dp'
+                row_force_default: True
+                row_default_height: '20dp'

@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 
 from math import factorial
@@ -41,11 +42,8 @@ def odds_list(odds, crawl):
     cum_prob_crawl = [sum(crawl[c:])*100 for c in range(len(crawl))]
     cum_prob_crawl.append(0)  # last entry is always 0, because all dice kill
 
-    odds_str = ''
     for c, (prob, cr) in enumerate(zip(cum_prob, cum_prob_crawl), start=1):
-        odds_str += '{} -- {:.1f}%/{:.1f}%\n'.format(c, prob, cr)
-
-    return odds_str
+        yield (c, prob, cr)
 
 
 class MainWidget(BoxLayout):
@@ -86,7 +84,18 @@ class MainWidget(BoxLayout):
 
             # Setting output
             self.ids[l_exp].text = 'Expect {:.2f} Kills'.format(expected_kills(dice_results))
-            self.ids[l_odd].text = odds_list(dice_results, dice_crawler)
+            grid_odds = self.ids[l_odd]
+            grid_odds.clear_widgets()
+            for odds in list(odds_list(dice_results, dice_crawler)):
+                grid_odds.add_widget(Label(text='{}'.format(odds[0]),
+                                           font_size='20dp',
+                                          ))
+                grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[1]),
+                                           font_size='20dp',
+                                          ))
+                grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[2]),
+                                           font_size='10dp',
+                                          ))
 
 
 class ZombicideDicingApp(App):

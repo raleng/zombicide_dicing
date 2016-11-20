@@ -41,9 +41,9 @@ def odds_list(odds, crawl):
     cum_prob_crawl = [sum(crawl[c:])*100 for c in range(len(crawl))]
     cum_prob_crawl.append(0)  # last entry is always 0, because all dice kill
 
-    odds_str = '{} Zombie: {:.1f}%/{:.1f}%\n'.format(1, cum_prob[0], cum_prob_crawl[0])
-    for c, (prob, cr) in enumerate(zip(cum_prob[1:], cum_prob_crawl[1:]), start=2):
-        odds_str += '{} Zombies: {:.1f}%/{:.1f}%\n'.format(c, prob, cr)
+    odds_str = ''
+    for c, (prob, cr) in enumerate(zip(cum_prob, cum_prob_crawl), start=1):
+        odds_str += '{} -- {:.1f}%/{:.1f}%\n'.format(c, prob, cr)
 
     return odds_str
 

@@ -1,7 +1,16 @@
 <PlusMinusButton@Button>:
     font_size: '20dp'
+    background_normal: 'data/red700.png'
+    background_down: 'data/red500.png'
 
 <MainWidget>:
+    canvas.before:
+        Color:
+            rgb: (0.12, 0.12, 0.12)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     orientation: 'horizontal'
     padding: 10
     spacing: 10

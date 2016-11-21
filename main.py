@@ -83,18 +83,22 @@ class MainWidget(BoxLayout):
                 dice_crawler = list(calc_odds(dice_num-1, 6))
 
             # Setting output
-            self.ids[l_exp].text = 'Expect {:.2f} Kills'.format(expected_kills(dice_results))
+            self.ids[l_exp].text = 'Avg: {:.2f}'.format(expected_kills(dice_results))
             grid_odds = self.ids[l_odd]
             grid_odds.clear_widgets()
             for odds in list(odds_list(dice_results, dice_crawler)):
                 grid_odds.add_widget(Label(text='{}'.format(odds[0]),
-                                           font_size='20dp',
+                                           font_size='25dp',
+                                           bold=True,
+                                           size_hint_x=0.25,
                                           ))
                 grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[1]),
-                                           font_size='20dp',
+                                           font_size='25dp',
+                                           size_hint_x=0.5,
                                           ))
                 grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[2]),
-                                           font_size='10dp',
+                                           font_size='15dp',
+                                           size_hint_x=0.25,
                                           ))
 
 

@@ -48,6 +48,10 @@ def odds_list(odds, crawl):
 
 class MainWidget(BoxLayout):
 
+    def __init__(self):
+        super(MainWidget, self).__init__()
+        self.change_odds()
+
     @staticmethod
     def decrease_num(current_num):
         """ Decreases number by one. Dose not decrease below 1. """

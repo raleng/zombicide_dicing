@@ -6,22 +6,24 @@
 <MainWidget>:
     canvas.before:
         Color:
-            rgb: (0.12, 0.12, 0.12)
+            rgb: (0.13, 0.13, 0.13)
         Rectangle:
             pos: self.pos
             size: self.size
 
     orientation: 'horizontal'
-    padding: 10
-    spacing: 10
+    padding: '4dp'
+    spacing: '3dp'
 
     BoxLayout:
+
         id: dice_1
         orientation: 'vertical'
 
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: 0.4
+            spacing: '5dp'
             BoxLayout:
                 orientation: 'vertical'
                 Label:
@@ -79,6 +81,12 @@
                         on_release: root.change_odds()
 
         Label:
+            canvas.before:
+                Color:
+                    rgb: (0.19, 0.19, 0.19)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             id: expected_1
             size_hint_y: 0.1
             text: 'Expect 0.17 Kills'
@@ -86,6 +94,12 @@
             valign: 'middle'
 
         ScrollView:
+            canvas.before:
+                Color:
+                    rgb: (0.19, 0.19, 0.19)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             GridLayout:
                 id: odds_1
                 cols: 3
@@ -100,6 +114,7 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: 0.4
+            spacing: '5dp'
             BoxLayout:
                 orientation: 'vertical'
                 Label:
@@ -157,6 +172,12 @@
                         on_release: root.change_odds()
 
         Label:
+            canvas.before:
+                Color:
+                    rgb: (0.19, 0.19, 0.19)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             id: expected_2
             size_hint_y: 0.1
             text: 'Expect 0.17 Kills'
@@ -164,6 +185,12 @@
             valign: 'middle'
 
         ScrollView:
+            canvas.before:
+                Color:
+                    rgb: (0.19, 0.19, 0.19)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             GridLayout:
                 id: odds_2
                 cols: 3

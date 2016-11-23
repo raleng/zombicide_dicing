@@ -4,7 +4,7 @@ language: generic
 services: docker
 
 before_script:
-    - export IMAGE="renemilk/zomibicide_dicing"
+    - export IMAGE="renemilk/zombicide_dicing"
     - docker pull ${IMAGE} 
     - export ENV_FILE=${HOME}/env
     - printenv | \grep TRAVIS > ${ENV_FILE}

@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.clock import Clock
 
 from math import factorial
 
@@ -52,9 +53,13 @@ def odds_list(odds, crawl):
 
 class DiceLayout(FloatLayout):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """ Initializes odds for default values after building widget. """
-        super(DiceLayout, self).__init__()
+        super(DiceLayout, self).__init__(**kwargs)
+        # Make sure the widget init is done
+        Clock.schedule_once(self._finish_init, 0)
+
+    def _finish_init(self, dt=0):
         self.change_odds()
 
     @staticmethod
@@ -116,10 +121,7 @@ class MainWidget(BoxLayout):
 
 class ZomDieApp(App):
     def build(self):
-        main = MainWidget()
-        main.add_widget(DiceLayout())
-        main.add_widget(DiceLayout())
-        return main
+        return MainWidget()
 
 
 if __name__ == "__main__":

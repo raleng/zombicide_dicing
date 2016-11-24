@@ -1,2 +1,2 @@
-# zomibicide_dicing
+# ZomDie
 Compare dice probabilities for the game Zombicide.

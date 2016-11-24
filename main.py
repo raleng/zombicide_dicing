@@ -89,6 +89,7 @@ class MainWidget(BoxLayout):
             # Setting output
             self.ids[l_exp].text = 'Avg: {:.2f}'.format(expected_kills(dice_results))
             grid_odds = self.ids[l_odd]
+            grid_odds.bind(minimum_height=grid_odds.setter('height'))
             grid_odds.clear_widgets()
             for odds in list(odds_list(dice_results, dice_crawler)):
                 grid_odds.add_widget(Label(text='{}'.format(odds[0]),

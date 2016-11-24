@@ -36,8 +36,11 @@ def expected_kills(odds):
 
 
 def odds_list(odds, crawl):
-    """ Generates a string, listing the cumulative probabilities for killing any
-    number of zombies.
+    """ Yields tuple (N, P, C) with
+
+    N = Number of killed zombies,
+    P = Probability killing N zombies,
+    C = Probability generating a crawler while killing N zombies.
     """
     cum_prob = [sum(odds[c:])*100 for c in range(len(odds))]
     cum_prob_crawl = [sum(crawl[c:])*100 for c in range(len(crawl))]
@@ -50,7 +53,7 @@ def odds_list(odds, crawl):
 class DiceLayout(FloatLayout):
 
     def __init__(self):
-        """ initializes odds for default values after building widget """
+        """ Initializes odds for default values after building widget. """
         super(DiceLayout, self).__init__()
         self.change_odds()
 

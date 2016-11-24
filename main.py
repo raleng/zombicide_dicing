@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 
 from math import factorial
 
@@ -46,10 +47,11 @@ def odds_list(odds, crawl):
         yield (c, prob, cr)
 
 
-class MainWidget(BoxLayout):
+class DiceLayout(FloatLayout):
 
     def __init__(self):
-        super(MainWidget, self).__init__()
+        """ initializes odds for default values after building widget """
+        super(DiceLayout, self).__init__()
         self.change_odds()
 
     @staticmethod
@@ -70,47 +72,52 @@ class MainWidget(BoxLayout):
 
     def change_odds(self):
         """ Sets the text labels according to the current probabilities. """
-        labels = [['num_1', 'win_1', 'expected_1', 'odds_1'], 
-                  ['num_2', 'win_2', 'expected_2', 'odds_2']]
 
-        for l_num, l_win, l_exp, l_odd in labels:
-            # Getting input values and calculating odds
-            dice_num = int(self.ids[l_num].text)
-            dice_win = int(self.ids[l_win].text)
-            dice_results = list(calc_odds(dice_num, dice_win))
+        # Getting input values and calculating odds
+        dice_num = int(self.ids['num'].text)
+        dice_win = int(self.ids['win'].text)
+        dice_results = list(calc_odds(dice_num, dice_win))
 
-            # If dice win with 1 or better (i.e. always), no crawler is being created.
-            # Calling 'calc_odds(_, 7)' returns list of zeros
-            if dice_win == 1:
-                dice_crawler = list(calc_odds(dice_num-1, 7))
-            else:
-                dice_crawler = list(calc_odds(dice_num-1, 6))
+        # If dice win with 1 or better (i.e. always), no crawler is being created.
+        # Calling 'calc_odds(_, 7)' returns list of zeros
+        if dice_win == 1:
+            dice_crawler = list(calc_odds(dice_num-1, 7))
+        else:
+            dice_crawler = list(calc_odds(dice_num-1, 6))
 
-            # Setting output
-            self.ids[l_exp].text = 'Avg: {:.2f}'.format(expected_kills(dice_results))
-            grid_odds = self.ids[l_odd]
-            grid_odds.bind(minimum_height=grid_odds.setter('height'))
-            grid_odds.clear_widgets()
-            for odds in list(odds_list(dice_results, dice_crawler)):
-                grid_odds.add_widget(Label(text='{}'.format(odds[0]),
-                                           font_size='25dp',
-                                           bold=True,
-                                           size_hint_x=0.25,
-                                          ))
-                grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[1]),
-                                           font_size='25dp',
-                                           size_hint_x=0.5,
-                                          ))
-                grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[2]),
-                                           font_size='15dp',
-                                           size_hint_x=0.25,
-                                          ))
+        # Setting output
+        self.ids['exp'].text = 'Avg: {:.2f}'.format(expected_kills(dice_results))
+
+        grid_odds = self.ids['odd']
+        grid_odds.bind(minimum_height=grid_odds.setter('height'))
+        grid_odds.clear_widgets()
+        for odds in list(odds_list(dice_results, dice_crawler)):
+            grid_odds.add_widget(Label(text='{}'.format(odds[0]),
+                                       font_size='25dp',
+                                       bold=True,
+                                       size_hint_x=0.3,
+                                       ))
+            grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[1]),
+                                       font_size='25dp',
+                                       size_hint_x=0.4,
+                                       ))
+            grid_odds.add_widget(Label(text='{:.1f}%'.format(odds[2]),
+                                       font_size='15dp',
+                                       size_hint_x=0.3,
+                                       ))
 
 
-class ZombicideDicingApp(App):
+class MainWidget(BoxLayout):
+    pass
+
+
+class ZomDieApp(App):
     def build(self):
-        return MainWidget()
+        main = MainWidget()
+        main.add_widget(DiceLayout())
+        main.add_widget(DiceLayout())
+        return main
 
 
 if __name__ == "__main__":
-    ZombicideDicingApp().run()
+    ZomDieApp().run()

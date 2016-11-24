@@ -1,0 +1,113 @@
+<PlusMinusButton@Button>:
+    font_size: '20dp'
+    background_normal: 'data/red700.png'
+    background_down: 'data/red500.png'
+
+<DiceLayout@FloatLayout>:
+    spacing: '5dp'
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.3
+        pos_hint: {'x': 0, 'y': .7}
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: num
+                text: '1'
+                font_size: '110dp'
+            Label:
+                text: '# of dice'
+                font_size: '13dp'
+                size_hint_y: 0.1
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: win
+                text: '6'
+                font_size: '110dp'
+            Label:
+                text: 'or better'
+                font_size: '13dp'
+                size_hint_y: 0.1
+
+
+    Label:
+        canvas.before:
+            Color:
+                rgb: (0.19, 0.19, 0.19)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        id: exp
+        size_hint_y: 0.15
+        pos_hint: {'x': 0, 'y': 0.52}
+        font_size: '30dp'
+        bold: True
+        valign: 'middle'
+
+    ScrollView:
+        size_hint_y: 0.53
+        pos_hint: {'x': 0, 'y': 0}
+        canvas.before:
+            Color:
+                rgb: (0.19, 0.19, 0.19)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        GridLayout:
+            id: odd
+            cols: 3
+            spacing: '10dp'
+            size_hint_y: None
+            row_force_default: True
+            row_default_height: '30dp'
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.04
+        pos_hint: {'x': 0, 'y': .65}
+
+        Label:
+            size_hint_x: 0.15
+
+        PlusMinusButton:
+            text: '-'
+            on_press: num.text = root.decrease_num(num.text)
+            on_release: root.change_odds()
+
+        PlusMinusButton:
+            text: '+'
+            on_press: num.text = str(int(num.text) + 1)
+            on_release: root.change_odds()
+
+        Label:
+            size_hint_x: 0.15
+
+        PlusMinusButton:
+            text: '-'
+            on_press: win.text = root.decrease_num(win.text)
+            on_release: root.change_odds()
+
+        PlusMinusButton:
+            text: '+'
+            on_press: win.text = root.increase_num(win.text)
+            on_release: root.change_odds()
+
+        Label:
+            size_hint_x: 0.15
+
+
+<MainWidget>:
+    canvas.before:
+        Color:
+            rgb: (0.13, 0.13, 0.13)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: 'horizontal'
+    padding: '7dp'
+    spacing: '7dp'

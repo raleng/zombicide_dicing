@@ -2,14 +2,15 @@
 # build with
 #     docker build -f Dockerfile -t renemilk/zombicide_dicing .
 # use the produced image with
-#     docker run -v your_project_dir:/root/build renemilk/zombicide_dicing
+#     docker run -v your_project_dir:~/build renemilk/zombicide_dicing
 # at the end of the run, the build directory in your project should contain the apk
-# you can use the /root/.buildozer/ volume to cache your distributions (first usage may be longer)
+# you can use the ~/.buildozer/ volume to cache your distributions (first usage may be longer)
 
 FROM ubuntu:16.10
 
-ENV HOME /root
+RUN groupadd -r dicing && useradd -r -m -g dicing dicing
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN dpkg --add-architecture i386 &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
@@ -22,18 +23,26 @@ RUN dpkg --add-architecture i386 &&\
     pip install --upgrade cython buildozer
 ENV DEBIAN_FRONTEND teletype
 
-RUN mkdir /root/test_project/
 
-# RUN wget https://www.crystax.net/download/crystax-ndk-10.3.2-linux-x86_64.tar.xz 
-COPY crystax-ndk-10.3.2-linux-x86_64.tar.xz /root/
-RUN unp /root/crystax-ndk-10.3.2-linux-x86_64.tar.xz 1> /dev/null && \
-  ln -s $PWD/crystax-ndk-10.3.2-linux-x86_64 /opt/crystax-ndk-10.3.2 && \
-  rm /root/crystax-ndk-10.3.2-linux-x86_64.tar.xz
-RUN cd /root/test_project && \
+#RUN chown dicing /home/dicing
+
+ENV CRYSTAX_VER crystax-ndk-10.3.2-linux-x86_64
+ENV CRYSTAX_TGZ ${CRYSTAX_VER}.tar.xz
+RUN wget https://www.crystax.net/download/${CRYSTAX_TGZ} \
+        -O /tmp/${CRYSTAX_TGZ} && \
+    file /tmp/${CRYSTAX_TGZ} && \
+    unp /tmp/${CRYSTAX_TGZ} 1> /dev/null && \
+    mv /tmp/${CRYSTAX_VER} /opt/${CRYSTAX_VER} && \
+    rm /tmp/${CRYSTAX_TGZ}
+
+USER dicing
+ENV HOME /home/dicing
+RUN mkdir -p $HOME/test_project/ && \
+    cd ~/test_project && \
     echo y | buildozer init && \
     echo y | buildozer -v android_new debug &&\
-    mkdir /root/build/
+    mkdir ~/build/
 
-VOLUME ["/root/.buildozer", "/root/build"]
-WORKDIR "/root/build"
+VOLUME ["~/.buildozer", "~/build"]
+WORKDIR "~/build"
 ENTRYPOINT ["buildozer", "android_new", "debug"]

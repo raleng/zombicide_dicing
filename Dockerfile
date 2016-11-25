@@ -20,7 +20,7 @@ RUN dpkg --add-architecture i386 &&\
         libpangox-1.0-0:i386 libpangoxft-1.0-0:i386 libidn11:i386 \
         python2.7 python2.7-dev python-pip openjdk-8-jdk unzip \
         lzma unp zlib1g-dev python-setuptools zlib1g:i386 &&\
-    pip install --upgrade cython buildozer
+    pip install --upgrade cython buildozer six
 ENV DEBIAN_FRONTEND teletype
 
 
@@ -28,12 +28,9 @@ ENV DEBIAN_FRONTEND teletype
 
 ENV CRYSTAX_VER crystax-ndk-10.3.2-linux-x86_64
 ENV CRYSTAX_TGZ ${CRYSTAX_VER}.tar.xz
-RUN wget https://www.crystax.net/download/${CRYSTAX_TGZ} \
-        -O /tmp/${CRYSTAX_TGZ} && \
-    file /tmp/${CRYSTAX_TGZ} && \
-    unp /tmp/${CRYSTAX_TGZ} 1> /dev/null && \
-    mv /tmp/${CRYSTAX_VER} /opt/${CRYSTAX_VER} && \
-    rm /tmp/${CRYSTAX_TGZ}
+RUN cd /opt && \
+    wget -O- https://www.crystax.net/download/${CRYSTAX_TGZ} \
+    | tar xvJ
 
 USER dicing
 ENV HOME /home/dicing

@@ -28,6 +28,17 @@ def calc_odds(num_dice, win_with):
         yield val
 
 
+def calc_crawl(num_dice):
+    """ Computes the probability for generating at least one crawler.
+
+    The formula is:
+    1 - (5/6)^num_dice
+    """
+    for num in range(num_dice, 0, -1):
+        yield (1 - (5/6) ** num) * 100
+    yield 0  # last entry is always 0, because all dice kill
+
+
 def expected_kills(odds):
     """ Computes the expected value of zombie kills. """
     expect = 0
@@ -44,10 +55,8 @@ def odds_list(odds, crawl):
     C = Probability generating a crawler while killing N zombies.
     """
     cum_prob = [sum(odds[c:])*100 for c in range(len(odds))]
-    cum_prob_crawl = [sum(crawl[c:])*100 for c in range(len(crawl))]
-    cum_prob_crawl.append(0)  # last entry is always 0, because all dice kill
 
-    for c, (prob, cr) in enumerate(zip(cum_prob, cum_prob_crawl), start=1):
+    for c, (prob, cr) in enumerate(zip(cum_prob, crawl), start=1):
         yield (c, prob, cr)
 
 
@@ -87,11 +96,10 @@ class DiceLayout(FloatLayout):
         dice_results = list(calc_odds(dice_num, dice_win))
 
         # If dice win with 1 or better (i.e. always), no crawler is being created.
-        # Calling 'calc_odds(_, 7)' returns list of zeros
         if dice_win == 1:
-            dice_crawler = list(calc_odds(dice_num-1, 7))
+            dice_crawler = [0 for _ in range(dice_num)]
         else:
-            dice_crawler = list(calc_odds(dice_num-1, 6))
+            dice_crawler = list(calc_crawl(dice_num-1))
 
         # Setting output
         self.ids['exp'].text = 'Avg: {:.2f}'.format(expected_kills(dice_results))

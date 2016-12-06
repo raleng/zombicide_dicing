@@ -73,7 +73,7 @@ class DiceLayout(FloatLayout):
 
     @staticmethod
     def decrease_num(current_num):
-        """ Decreases number by one. Dose not decrease below 1. """
+        """ Decreases number by one. Does not decrease below 1. """
         if int(current_num) > 1:
             return str(int(current_num) - 1)
         else:
@@ -81,7 +81,7 @@ class DiceLayout(FloatLayout):
 
     @staticmethod
     def increase_num(current_num):
-        """ Increases number by one. Dose not increase over 6. """
+        """ Increases number by one. Does not increase over 6. """
         if int(current_num) < 6:
             return str(int(current_num) + 1)
         else:

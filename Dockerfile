@@ -41,5 +41,5 @@ RUN mkdir -p $HOME/test_project/ && \
     mkdir ~/build/
 
 VOLUME ["~/.buildozer", "~/build"]
-WORKDIR "~/build"
+WORKDIR "/home/dicing/build"
 ENTRYPOINT ["buildozer", "android_new", "debug"]

@@ -5,13 +5,13 @@ services: docker
 
 before_script:
     - export IMAGE="renemilk/zombicide_dicing"
-    - docker pull ${IMAGE} 
+    - docker pull ${IMAGE}
     - export ENV_FILE=${HOME}/env
     - printenv | \grep TRAVIS > ${ENV_FILE}
-    - export DOCKER_RUN="docker run --env-file ${ENV_FILE} -v ${TRAVIS_BUILD_DIR}:/root/build ${IMAGE}"
+    - export DOCKER_RUN="docker run --env-file ${ENV_FILE} -v ${TRAVIS_BUILD_DIR}:/home/dicing/build ${IMAGE}"
 
 script:
-    - ${DOCKER_RUN} 
+    - ${DOCKER_RUN}
 
 notifications:
   email:

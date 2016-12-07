@@ -2,7 +2,7 @@
 # build with
 #     docker build -f Dockerfile -t renemilk/zombicide_dicing .
 # use the produced image with
-#     docker run -v your_project_dir:~/build renemilk/zombicide_dicing
+#     docker run -v your_project_dir/.buildozer:/home/dicing/.buildozer -v your_project_dir:/home/dicing/build renemilk/zombicide_dicing
 # at the end of the run, the build directory in your project should contain the apk
 # you can use the ~/.buildozer/ volume to cache your distributions (first usage may be longer)
 
@@ -40,6 +40,6 @@ RUN mkdir -p $HOME/test_project/ && \
     echo y | buildozer -v android_new debug &&\
     mkdir ~/build/
 
-VOLUME ["~/.buildozer", "~/build"]
+VOLUME ["/home/dicing/.buildozer", "/home/dicing/build"]
 WORKDIR "/home/dicing/build"
 ENTRYPOINT ["buildozer", "android_new", "debug"]

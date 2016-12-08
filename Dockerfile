@@ -18,7 +18,7 @@ RUN dpkg --add-architecture i386 &&\
         libgtk2.0-0:i386 python-jinja2 python-sh python-appdirs python-colorama \
         python3-setuptools python3-jinja2 python3-sh python3-appdirs python3-colorama \
         libpangox-1.0-0:i386 libpangoxft-1.0-0:i386 libidn11:i386 \
-        python2.7 python2.7-dev python-pip openjdk-8-jdk unzip \
+        python2.7 python2.7-dev python-pip openjdk-8-jdk unzip vim \
         lzma unp zlib1g-dev python-setuptools zlib1g:i386 &&\
     pip install --upgrade cython buildozer six
 ENV DEBIAN_FRONTEND teletype
@@ -29,17 +29,18 @@ ENV DEBIAN_FRONTEND teletype
 ENV CRYSTAX_VER crystax-ndk-10.3.2-linux-x86_64
 ENV CRYSTAX_TGZ ${CRYSTAX_VER}.tar.xz
 RUN cd /opt && \
-    wget -O- https://www.crystax.net/download/${CRYSTAX_TGZ} \
-    | tar xvJ
+    wget -q -O- https://www.crystax.net/download/${CRYSTAX_TGZ} \
+    | tar xJ
 
+ADD minimal_spec/* /home/dicing/minimal_spec/
+RUN chown -R dicing /home/dicing/
 USER dicing
 ENV HOME /home/dicing
-RUN mkdir -p $HOME/test_project/ && \
-    cd ~/test_project && \
-    echo y | buildozer init && \
-    echo y | buildozer -v android_new debug &&\
-    mkdir ~/build/
 
-VOLUME ["/home/dicing/.buildozer", "/home/dicing/build"]
+# RUN set -e && cd /home/dicing/minimal_spec && \
+#     echo y | buildozer -v android_new debug &&\
+#     mkdir ~/build/
+
+VOLUME ["/home/dicing/build"]
 WORKDIR "/home/dicing/build"
-ENTRYPOINT ["buildozer", "android_new", "debug"]
+# ENTRYPOINT ["buildozer", "android_new", "debug"]

@@ -4,7 +4,7 @@ language: generic
 services: docker
 
 before_script:
-    - export IMAGE="renemilk/zombicide_dicing"
+    - export IMAGE="raleng/zomdie"
     - docker pull ${IMAGE}
     - export ENV_FILE=${HOME}/env
     - printenv | \grep TRAVIS > ${ENV_FILE}
@@ -17,4 +17,3 @@ notifications:
   email:
     on_success: change
     on_failure: change
-

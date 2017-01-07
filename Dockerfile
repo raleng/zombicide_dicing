@@ -19,7 +19,7 @@ RUN dpkg --add-architecture i386 &&\
         python3-setuptools python3-jinja2 python3-sh python3-appdirs python3-colorama \
         libpangox-1.0-0:i386 libpangoxft-1.0-0:i386 libidn11:i386 \
         python2.7 python2.7-dev python-pip openjdk-8-jdk unzip vim \
-        lzma unp zlib1g-dev python-setuptools zlib1g:i386 &&\
+        lzma unp zlib1g-dev python-setuptools zlib1g:i386 file &&\
     pip install --upgrade cython buildozer six
 ENV DEBIAN_FRONTEND teletype
 
@@ -37,9 +37,9 @@ RUN chown -R dicing /home/dicing/
 USER dicing
 ENV HOME /home/dicing
 
-# RUN set -e && cd /home/dicing/minimal_spec && \
-#     echo y | buildozer -v android_new debug &&\
-#     mkdir ~/build/
+RUN set -e && cd /home/dicing/minimal_spec && \
+    echo y | buildozer -v android_new debug &&\
+    mkdir ~/build/
 
 VOLUME ["/home/dicing/build"]
 WORKDIR "/home/dicing/build"

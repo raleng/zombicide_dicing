@@ -6,9 +6,8 @@
 # at the end of the run, the build directory in your project should contain the apk
 # you can use the ~/.buildozer/ volume to cache your distributions (first usage may be longer)
 
-FROM ubuntu:16.10
+FROM ubuntu:17.04
 
-RUN groupadd -r dicing && useradd -r -m -g dicing dicing
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN dpkg --add-architecture i386 &&\
@@ -23,8 +22,18 @@ RUN dpkg --add-architecture i386 &&\
     pip install --upgrade cython buildozer six
 ENV DEBIAN_FRONTEND teletype
 
-
-#RUN chown dicing /home/dicing
+ENV GOSU_VERSION 1.9
+RUN set -x \
+    && apt-get update && apt-get install -y --no-install-recommends dirmngr ca-certificates wget && rm -rf /var/lib/apt/lists/* \
+    && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
+    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+    && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true
 
 ENV CRYSTAX_VER crystax-ndk-10.3.2-linux-x86_64
 ENV CRYSTAX_TGZ ${CRYSTAX_VER}.tar.xz
@@ -33,14 +42,13 @@ RUN cd /opt && \
     | tar xJ
 
 ADD minimal_spec/* /home/dicing/minimal_spec/
-RUN chown -R dicing /home/dicing/
-USER dicing
-ENV HOME /home/dicing
 
 RUN set -e && cd /home/dicing/minimal_spec && \
-    echo y | buildozer -v android_new debug &&\
+    echo y | buildozer -v android debug &&\
     mkdir ~/build/
 
 VOLUME ["/home/dicing/build"]
 WORKDIR "/home/dicing/build"
+ADD entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 # ENTRYPOINT ["buildozer", "android_new", "debug"]

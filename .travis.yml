@@ -4,14 +4,11 @@ language: generic
 services: docker
 
 before_script:
-    - export IMAGE="raleng/zomdie"
+    - export IMAGE="raleng/zomdie:latest"
     - docker pull ${IMAGE}
-    - export ENV_FILE=${HOME}/env
-    - printenv | \grep TRAVIS > ${ENV_FILE}
-    - export DOCKER_RUN="docker run --env-file ${ENV_FILE} -v ${TRAVIS_BUILD_DIR}:/home/dicing/build ${IMAGE}"
 
 script:
-    - ${DOCKER_RUN}
+    - make release
 
 notifications:
   email:

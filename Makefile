@@ -1,5 +1,5 @@
 REPO = raleng/zomdie
-TAG = latest
+TAG = kotlin
 
 .PHONY: push docker
 
@@ -14,5 +14,8 @@ release:
 
 debug:
 	docker run -it  -e LOCAL_USER_ID=$(shell id -u) -v ${PWD}:/home/dicing/build $(REPO):$(TAG) buildozer android debug
+
+interactive: docker
+	docker run -it  -e LOCAL_USER_ID=$(shell id -u) -v ${PWD}:/home/dicing/build $(REPO):$(TAG) bash
 
 all: debug

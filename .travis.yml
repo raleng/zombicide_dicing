@@ -4,11 +4,11 @@ language: generic
 services: docker
 
 before_script:
-    - export IMAGE="raleng/zomdie:latest"
+    - export IMAGE="raleng/zomdie:kotlin"
     - docker pull ${IMAGE}
 
 script:
-    - make release
+    - make run
 
 notifications:
   email:

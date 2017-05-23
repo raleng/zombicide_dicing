@@ -1,6 +1,6 @@
 sudo: required
 dist: trusty
-language: generic
+language: java
 services: docker
 
 before_script:

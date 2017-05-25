@@ -8,7 +8,7 @@ before_script:
     - docker pull ${IMAGE}
 
 script:
-    - make run
+    - make debug
 
 notifications:
   email:

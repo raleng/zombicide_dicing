@@ -1,7 +1,8 @@
 REPO = raleng/zomdie
 TAG = kotlin
+DOCKER = docker run --rm -it -e LOCAL_USER_ID=$(shell id -u) -v ${PWD}:/home/dicing/ $(REPO):$(TAG)
 
-.PHONY: push docker
+.PHONY: docker push debug release
 
 docker:
 	docker build --rm -t $(REPO):$(TAG) docker
@@ -10,11 +11,10 @@ push:
 	docker push $(REPO):$(TAG)
 
 debug: docker
-	[ -d build/debug ] || mkdir -p build/debug
-	docker run -it  -e LOCAL_USER_ID=$(shell id -u) -v ${PWD}:/home/dicing/build $(REPO):$(TAG) kotlinc main.kt -include-runtime -d build/debug/zomdie.jar
+	$(DOCKER) gradle build
 
 interactive: docker
-	docker run -it  -e LOCAL_USER_ID=$(shell id -u) -v ${PWD}:/home/dicing/build $(REPO):$(TAG) bash
+	$(DOCKER) bash
 
 run: debug
 	java -jar build/debug/zomdie.jar

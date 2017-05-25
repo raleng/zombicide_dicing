@@ -3,9 +3,12 @@
 USER_ID=${LOCAL_USER_ID:-1000}
 
 echo "Starting with UID : $USER_ID"
+useradd --shell /bin/bash -u $USER_ID -o -c "" -m dicing && \
+    adduser dicing sudo &&\
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 export HOME=/home/dicing
-adduser -S -s /bin/bash -u ${USER_ID} -h ${HOME} dicing
 
-chown -R dicing $HOME
+chown -R dicing /home/dicing
+chown -R dicing /opt/android-sdk
 
 exec gosu dicing "$@"

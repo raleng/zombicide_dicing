@@ -1,27 +1,54 @@
-# adapted from https://gist.github.com/tshirtman/18e64fb786c8aa1a959295cabc59c626
-# build with
-#     docker build -f Dockerfile -t renemilk/zombicide_dicing .
-# use the produced image with
-#     docker run -v your_project_dir/.buildozer:/home/dicing/.buildozer -v your_project_dir:/home/dicing/build renemilk/zombicide_dicing
-# at the end of the run, the build directory in your project should contain the apk
-# you can use the ~/.buildozer/ volume to cache your distributions (first usage may be longer)
+# ====================================================================== #
+# Android SDK Docker Image
+# ====================================================================== #
 
-FROM rayyildiz/kotlin:latest
+# Base image
+# ---------------------------------------------------------------------- #
+FROM ubuntu:16.04
 
-# grab gosu for easy step-down from root
-RUN apk add --update ca-certificates curl gnupg && \
-    gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
-    ARCH=`uname -m`; if [ $ARCH == "x86_64" ]; then export ARCH="amd64"; else export ARCH="i386"; fi && \
-    curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$ARCH" && \
-    curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$ARCH.asc" && \
-    gpg --verify /usr/local/bin/gosu.asc && \
-	rm /usr/local/bin/gosu.asc && \
-	chmod +x /usr/local/bin/gosu && \
-    apk del ca-certificates curl gnupg && \
-    rm -rf /var/cache/apk/*
+# Author
+# ---------------------------------------------------------------------- #
+MAINTAINER Jing Li <thyrlian@gmail.com>
 
+# support multiarch: i386 architecture
+# install Java
+# install essential tools
+# install Qt
+RUN dpkg --add-architecture i386 && \
+    apt-get update -y && \
+    apt-get install -y --no-install-recommends libncurses5:i386 libc6:i386 libstdc++6:i386 lib32gcc1 lib32ncurses5 lib32z1 zlib1g:i386 \
+     openjdk-8-jdk git wget zip qt5-default gosu unzip grep
 
-VOLUME ["/home/dicing/build"]
-WORKDIR "/home/dicing/build"
+# download and install Gradle
+ENV GRADLE_VERSION 3.5
+RUN cd /opt && \
+    wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip && \
+    unzip gradle*.zip && \
+    ls -d */ | sed 's/\/*$//g' | xargs -I{} mv {} gradle && \
+    rm gradle*.zip
+
+# download and install Android SDK
+RUN mkdir -p /opt/android-sdk && cd /opt/android-sdk && \
+    wget -q $(wget -q -O- 'https://developer.android.com/sdk' | \
+    grep -o "\"https://.*android.*tools.*linux.*\"" | sed "s/\"//g") && \
+    unzip *tools*linux*.zip && \
+    rm *tools*linux*.zip
+
+# set the environment variables
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV GRADLE_HOME /opt/gradle
+ENV ANDROID_HOME /opt/android-sdk
+ENV PATH ${PATH}:${GRADLE_HOME}/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin
+
+# accept the license agreements of the SDK components
+RUN export ANDROID_LICENSES="$ANDROID_HOME/licenses" && \
+    [ -d $ANDROID_LICENSES ] || mkdir $ANDROID_LICENSES && \
+    [ -f $ANDROID_LICENSES/android-sdk-license ] || echo 8933bad161af4178b1185d1a37fbf41ea5269c55 > $ANDROID_LICENSES/android-sdk-license && \
+    [ -f $ANDROID_LICENSES/android-sdk-preview-license ] || echo 84831b9409646a918e30573bab4c9c91346d8abd > $ANDROID_LICENSES/android-sdk-preview-license && \
+    [ -f $ANDROID_LICENSES/intel-android-extra-license ] || echo d975f751698a77b662f1254ddbeed3901e976f5a > $ANDROID_LICENSES/intel-android-extra-license && \
+    unset ANDROID_LICENSES
+
+VOLUME ["/home/dicing/"]
+WORKDIR "/home/dicing/"
 ADD entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
